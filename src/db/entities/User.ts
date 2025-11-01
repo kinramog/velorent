@@ -1,6 +1,8 @@
-import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from "typeorm";
+import { Rental } from "./Rental";
+import { Review } from "./Review";
 
-@Entity()
+@Entity("users")
 export class User {
   @PrimaryGeneratedColumn()
   id: number;
@@ -14,9 +16,15 @@ export class User {
   @Column()
   password: string;
 
-  @Column({ default: 'user' })
-  role: string;
+  @Column({ default: "user" })
+  role: "user" | "admin";
 
-  @CreateDateColumn({ name: 'registered_at' })
-  registeredAt: Date;
+  @Column({ type: "timestamp", default: () => "CURRENT_TIMESTAMP" })
+  registered_at: Date;
+
+  @OneToMany(() => Rental, rental => rental.user)
+  rentals: Rental[];
+
+  @OneToMany(() => Review, review => review.user)
+  reviews: Review[];
 }
