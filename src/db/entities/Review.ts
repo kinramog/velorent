@@ -1,19 +1,24 @@
-import { Entity, PrimaryGeneratedColumn, Column} from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, ManyToOne} from 'typeorm';
+import { User } from './User';
+import { Bicycle } from './Bicycle';
 
-@Entity()
+@Entity("reviews")
 export class Review {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column()
-  user_id: number;
+  @ManyToOne(() => User, user => user.reviews, { onDelete: "CASCADE" })
+  user: User;
+
+  @ManyToOne(() => Bicycle, bicycle => bicycle.reviews, { onDelete: "CASCADE" })
+  bicycle: Bicycle;
 
   @Column()
-  bicycle_id: number;
-
-  @Column('text')
   text: string;
 
-  @Column('int')
+  @Column({ type: "int", default: 5 })
   rating: number;
+
+  @Column({ type: "timestamp", default: () => "CURRENT_TIMESTAMP" })
+  created_at: Date;
 }

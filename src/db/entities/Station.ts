@@ -1,6 +1,7 @@
-import { Entity, PrimaryGeneratedColumn, Column} from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, OneToMany} from 'typeorm';
 
-@Entity()
+
+@Entity("stations")
 export class Station {
   @PrimaryGeneratedColumn()
   id: number;
@@ -8,6 +9,9 @@ export class Station {
   @Column()
   address: string;
 
-  @Column()
-  bicycles_count: number;
+  @Column({ nullable: true })
+  name: string;
+
+  // @OneToMany(() => StationBicycle, sb => sb.station)
+  // stationBicycles: StationBicycle[];
 }

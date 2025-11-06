@@ -1,6 +1,8 @@
-import { Entity, PrimaryGeneratedColumn, Column} from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, OneToMany} from 'typeorm';
+import { Rental } from './Rental';
+import { Review } from './Review';
 
-@Entity()
+@Entity("bicycles")
 export class Bicycle {
   @PrimaryGeneratedColumn()
   id: number;
@@ -11,12 +13,27 @@ export class Bicycle {
   @Column()
   type: string;
 
-  @Column('decimal')
+  @Column({ type: "decimal", precision: 10, scale: 2 })
   price_per_hour: number;
 
-  @Column({ default: 'available' })
-  status: string;
+  @Column({ default: 1 })
+  quantity: number;
+
+  @Column({ nullable: true })
+  description: string;
 
   @Column({ nullable: true })
   image_url: string;
+
+  @Column({ default: "available" })
+  status: string; // available / maintenance / archived
+
+  @OneToMany(() => Rental, rental => rental.bicycle)
+  rentals: Rental[];
+
+  @OneToMany(() => Review, review => review.bicycle)
+  reviews: Review[];
+
+  // @OneToMany(() => StationBicycle, sb => sb.bicycle)
+  // stationBicycles: StationBicycle[];
 }
