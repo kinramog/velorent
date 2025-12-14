@@ -3,9 +3,11 @@
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useAuthStore } from "@/store/authStore";
+import UserProfileCard from "@/src/components/profile-user/UserInfo";
+import RentalHistory from "@/src/components/profile-user/UserRentalHistory";
 
 export default function ProfilePage() {
-    const { isAuth, user } = useAuthStore();
+    const { user, isAuth } = useAuthStore();
     const router = useRouter();
 
     useEffect(() => {
@@ -15,9 +17,13 @@ export default function ProfilePage() {
     if (!user) return null;
 
     return (
-        <div className="p-6">
-            <h1 className="text-2xl font-bold mb-4">Личный кабинет</h1>
-            <p>Email: {user.email}</p>
+        <div className="min-h-screen bg-velosecondary p-6">
+            <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-4 gap-6">
+                <UserProfileCard user={user} />
+                <div className="lg:col-span-3">
+                    <RentalHistory />
+                </div>
+            </div>
         </div>
     );
 }
