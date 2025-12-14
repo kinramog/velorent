@@ -80,6 +80,8 @@ export default function BicycleCatalog() {
         <div className="min-h-screen bg-velosecondary p-6">
             <div className="mx-auto max-w-[1480px] px-4">
                 <h1 className="text-3xl font-bold mb-6">Каталог велосипедов</h1>
+                
+                {/* Кнопка открытия фильтров для мобильной версии */}
                 <div className="md:hidden mb-4">
                     <button
                         onClick={() => setFiltersOpen(!filtersOpen)}
@@ -88,6 +90,7 @@ export default function BicycleCatalog() {
                         Фильтры {filtersOpen ? "▲" : "▼"}
                     </button>
                 </div>
+
                 {/* Панель фильтров */}
                 <div
                     className={`rounded-xl bg-velobone p-4 shadow-sm mb-8 ${filtersOpen ? "block" : "hidden"} md:inline-flex md:items-center md:gap-4 md:static`}>

@@ -4,6 +4,7 @@ const URL = `${BASE_URL}/api`;
 
 export const API_ROUTES = {
     AUTH: {
+        BASE: `${URL}/auth`,
         LOGIN: `${URL}/auth/login`,
         SIGNUP: `${URL}/auth/signup`,
         LOGOUT: `${URL}/auth/logout`,
