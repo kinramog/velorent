@@ -38,7 +38,7 @@ export default function AuthModal({
                 }
                 return;
             }
-
+            
             if (mode === "login") {
                 login(data.access_token, data.user);
                 onClose();

@@ -38,4 +38,7 @@ export const API_ROUTES = {
         FINISH: (id) => `${URL}/rental/${id}/finish`,
         CANCEL: (id) => `${URL}/rental/${id}/cancel`,
     },
+    ADMIN: {
+        ALL_RENTALS: `${URL}/rental/all-rentals`,
+    }
 };

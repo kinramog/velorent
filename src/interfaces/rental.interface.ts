@@ -22,5 +22,11 @@ export interface IRental {
     status: {
         id: number,
         name: string
-    }
+    },
+    user: {
+        id: number,
+        fio: string,
+        phone: string,
+        email: string,
+    },
 }

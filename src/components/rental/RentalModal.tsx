@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { CreateRentalDto } from "./interfaces/rental.interface";
+import { CreateRentalDto } from "./interfaces/create-rental.interface";
 import { authFetch } from "@/src/lib/authFetch";
 import { API_ROUTES } from "@/src/lib/routes";
 import RentPrice from "./services/RentPrice";

@@ -10,7 +10,7 @@ import { useToastStore } from "@/store/toastStore";
 
 export default function Header() {
     const [open, setOpen] = useState(false);
-    const { isAuth, logout } = useAuthStore();
+    const { user, isAuth, logout } = useAuthStore();
     const [authMode, setAuthMode] = useState<"login" | "signup" | null>(null);
     const showToast = useToastStore((s) => s.show);
 
@@ -63,8 +63,22 @@ export default function Header() {
                             </>
                         ) : (
                             <>
-                                <Link href="/profile">Личный кабинет</Link>
-                                <button className="px-4 py-2 hover:text-velodeep"
+                                {user?.role?.name === "admin" ? (
+                                    <Link
+                                        href="/admin"
+                                        className="px-4 py-2 rounded bg-veloprimary text-white hover:opacity-90"
+                                    >
+                                        Кабинет администратора
+                                    </Link>
+                                ) : (
+                                    <Link
+                                        href="/profile"
+                                        className="px-4 py-2 rounded bg-veloprimary text-white hover:opacity-90"
+                                    >
+                                        Личный кабинет
+                                    </Link>
+                                )}
+                                <button className="px-4 py-2 hover:text-velodeep border rounded cursor-pointer"
                                     onClick={logoutFromServer}>Выйти</button>
                             </>
                         )}
@@ -93,8 +107,21 @@ export default function Header() {
                             </>
                         ) : (
                             <>
-                                <Link className="px-4 py-2 bg-veloprimary text-white rounded-md hover:bg-velodeep"
-                                    href="/profile">Личный кабинет</Link>
+                                {user?.role?.name === "admin" ? (
+                                    <Link
+                                        href="/admin"
+                                        className="px-4 py-2 bg-veloprimary text-white rounded-md hover:bg-velodeep text-center"
+                                    >
+                                        Кабинет администратора
+                                    </Link>
+                                ) : (
+                                    <Link
+                                        href="/profile"
+                                        className="px-4 py-2 bg-veloprimary text-white rounded-md hover:bg-velodeep text-center"
+                                    >
+                                        Личный кабинет
+                                    </Link>
+                                )}
                                 <button className="px-4 py-2 bg-veloprimary text-white rounded-md hover:bg-velodeep"
                                     onClick={logoutFromServer}>Выйти</button>
                             </>

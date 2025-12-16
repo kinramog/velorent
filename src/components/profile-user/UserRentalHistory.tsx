@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { authFetch } from "@/src/lib/authFetch";
 import { useAuthStore } from "@/store/authStore";
 import { API_ROUTES } from "@/src/lib/routes";
-import { IRental } from "./interfaces/rental.interface";
+import { IRental } from "../../interfaces/rental.interface";
 import { useToastStore } from "@/store/toastStore";
 import { RentalStatusEnum } from "@/src/constants/rental-status.enum";
 
