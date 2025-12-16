@@ -27,20 +27,21 @@ export default function AuthModal({
             });
 
             const data = await res.json();
-
-            if (mode === "login") {
-                login(data.access_token, data.user);
-                onClose();
-                return;
-            }
+            console.log(data);
 
             if (data.error) {
-                if (typeof (data.error) == 'string') {
+                if (typeof (data.message) == 'string') {
                     const msg = [data.message];
                     showToast("error", msg || "Произошла ошибка");
                 } else {
                     showToast("error", data.message || "Произошла ошибка");
                 }
+                return;
+            }
+
+            if (mode === "login") {
+                login(data.access_token, data.user);
+                onClose();
                 return;
             }
             showToast("success", "Регистрация прошла успешно. Теперь вы можете войти.");

@@ -9,10 +9,9 @@ type Props = {
 
 export default function BicycleCard({ bike }: Props) {
     const isDev = process.env.NODE_ENV === "development";
-
+ 
     return (
-        <Link
-            href={API_ROUTES.BICYCLES.BY_ID(bike.id)}
+        <div
             className="group flex flex-col h-full w-full rounded-2xl bg-veloprimary p-6 shadow transition hover:shadow-lg max-w-[420px] lg:max-w-[380px] 2xl:max-w-[380px]"
         >
             {/* Изображение */}
@@ -44,7 +43,17 @@ export default function BicycleCard({ bike }: Props) {
                 <div className="mt-2 text-lg font-bold">
                     {bike.price_per_hour} ₽ / час
                 </div>
+
+                {/* Кнопка */}
+                <Link
+                    href={`/bicycle/${bike.id}`}
+                    className="mt-3 inline-flex items-center justify-center
+                               rounded-lg bg-white px-4 py-3 text-sm font-semibold
+                               text-veloprimary transition hover:bg-gray-100"
+                >
+                    Подробнее
+                </Link>
             </div>
-        </Link>
+        </div>
     );
 }

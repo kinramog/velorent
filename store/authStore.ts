@@ -22,7 +22,7 @@ export const useAuthStore = create<AuthState>((set) => ({
     login: (token, user) => {
         localStorage.setItem("token", token);
         localStorage.setItem("user", JSON.stringify(user));
-
+        
         set({
             token,
             user,
