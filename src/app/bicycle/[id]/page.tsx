@@ -3,34 +3,34 @@
 import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 import Image from "next/image";
-import { IBicycle } from "@/src/interfaces/bicycle.interface";
 import { API_ROUTES, BASE_URL } from "@/src/lib/routes";
 import RentModal from "@/src/components/rental/RentalModal";
 import { useToastStore } from "@/store/toastStore";
 import { IBicycleStations } from "@/src/components/rental/interfaces/bicycles-stations.interface";
+import { IBicycleModel } from "@/src/interfaces/bicycle.interface";
 
 export default function BicyclePage() {
     const isDev = process.env.NODE_ENV === "development";
     const { id } = useParams();
-    const [bike, setBike] = useState<IBicycle | null>(null);
-    const [stations, setStations] = useState<IBicycleStations | null>(null);
+    const [bicycleModel, setBicycleModel] = useState<IBicycleModel | null>(null);
+    const [stations, setStations] = useState<IBicycleStations[] | null>(null);
     const [loading, setLoading] = useState(true);
     const [rentOpen, setRentOpen] = useState(false);
     const showToast = useToastStore((s) => s.show);
 
     useEffect(() => {
-        fetch(API_ROUTES.BICYCLES.BY_ID(id))
+        fetch(API_ROUTES.BICYCLE_MODELS.BY_ID(id))
             .then(res => res.json())
             .then(data => {
                 console.log("Данные по велосипеду:\n", data)
-                setBike(data)
+                setBicycleModel(data)
             })
             .finally(() => setLoading(false));
 
-        fetch(API_ROUTES.BICYCLES.GET_STATIONS(id))
+        fetch(API_ROUTES.STATIONS.BICYCLE_STATIONS(id))
             .then(res => res.json())
             .then(data => {
-                console.log("Данные по станциям, на которых есть велосипед:\n", data, API_ROUTES.BICYCLES.GET_STATIONS(id))
+                console.log("Данные по станциям, на которых есть велосипед:\n", data, API_ROUTES.STATIONS.BICYCLE_STATIONS(id))
                 setStations(data)
             })
             .finally(() => setLoading(false));
@@ -40,7 +40,7 @@ export default function BicyclePage() {
         return <div className="p-6">Загрузка...</div>;
     }
 
-    if (!bike) {
+    if (!bicycleModel) {
         return <div className="p-6">Велосипед не найден</div>;
     }
 
@@ -53,10 +53,10 @@ export default function BicyclePage() {
                     {/* Фото */}
                     <div className="relative aspect-square rounded-xl overflow-hidden bg-gray-100">
                         <Image
-                            src={bike.img_path
-                                ? BASE_URL + bike.img_path
-                                : "/bike-placeholder.png"}
-                            alt={bike.name}
+                            src={bicycleModel.img_path
+                                ? BASE_URL + bicycleModel.img_path
+                                : "/bicycleModel-placeholder.png"}
+                            alt={bicycleModel.name}
                             fill
                             unoptimized={isDev}
 
@@ -68,23 +68,23 @@ export default function BicyclePage() {
                     <div className="flex flex-col justify-between">
                         <div>
                             <h1 className="text-3xl font-bold mb-2">
-                                {bike.name}
+                                {bicycleModel.name}
                             </h1>
 
                             <p className="text-gray-600 mb-1">
-                                Тип: {bike.type?.name}
+                                Тип: {bicycleModel.type?.name}
                             </p>
 
                             <p className="text-gray-600 mb-1">
-                                Размер рамы: {bike.frame_size}
+                                Размер рамы: {bicycleModel.frame_size}
                             </p>
 
                             <p className="text-gray-600 mb-4">
-                                Рост велосипедиста: {bike.cyclist_min_height}–{bike.cyclist_max_height} см
+                                Рост велосипедиста: {bicycleModel.cyclist_min_height}–{bicycleModel.cyclist_max_height} см
                             </p>
 
                             <div className="text-2xl font-semibold text-veloprimary">
-                                {bike.price_per_hour} ₽ / час
+                                {bicycleModel.price_per_hour} ₽ / час
                             </div>
                         </div>
 
@@ -105,15 +105,14 @@ export default function BicyclePage() {
                         О велосипеде
                     </h2>
                     <p>
-                        Надёжный велосипед, подходящий для городских и загородных поездок.
-                        Отлично подойдёт для ежедневного использования.
+                        {bicycleModel.description}
                     </p>
                 </div>
 
                 {rentOpen && (
                     <RentModal
-                        bicycleId={bike.id}
-                        pricePerHour={bike.price_per_hour}
+                        model_id={bicycleModel.id}
+                        pricePerHour={bicycleModel.price_per_hour}
                         stations={stations}
                         onClose={() => setRentOpen(false)}
                         onSuccess={() => {

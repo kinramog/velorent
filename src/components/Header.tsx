@@ -47,7 +47,6 @@ export default function Header() {
                     <nav className="hidden md:flex items-center gap-6">
                         <Link href="/bicycle" className="hover:text-veloprimary">Каталог</Link>
                         <Link href="/stations" className="hover:text-veloprimary">Пункты проката</Link>
-                        <Link href="/prices" className="hover:text-veloprimary">Цены</Link>
                     </nav>
                     {/* Лого */}
                     <Link href="/" className="text-2xl font-bold text-veloprimary">
@@ -97,7 +96,7 @@ export default function Header() {
                                 <Link className="px-4 py-2 bg-veloprimary text-white rounded-md hover:bg-velodeep"
                                     href="/profile">Личный кабинет</Link>
                                 <button className="px-4 py-2 bg-veloprimary text-white rounded-md hover:bg-velodeep"
-                                    onClick={logoutHandler}>Выйти</button>
+                                    onClick={logoutFromServer}>Выйти</button>
                             </>
                         )}
                     </div>

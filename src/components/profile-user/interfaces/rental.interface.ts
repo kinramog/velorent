@@ -1,3 +1,5 @@
+import { IBicycleModel } from "@/src/interfaces/bicycle.interface"
+
 export interface IRental {
     id: number,
     start_time: Date,
@@ -13,16 +15,9 @@ export interface IRental {
     },
     bicycle: {
         id: number,
-        name: string,
-        description: string,
-        frame_size: number,
-        cyclist_min_height: number,
-        cyclist_max_height: number,
-        price_per_hour: number,
-        quantity: number,
-        img_path: string,
         created_at: Date,
-        updated_at: Date
+        updated_at: Date,
+        model: IBicycleModel
     },
     status: {
         id: number,

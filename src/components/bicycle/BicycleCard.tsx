@@ -1,7 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { IBicycle } from "@/src/interfaces/bicycle.interface";
-import { API_ROUTES, BASE_URL } from "@/src/lib/routes";
+import { BASE_URL } from "@/src/lib/routes";
 
 type Props = {
     bike: IBicycle;

@@ -9,7 +9,7 @@ import { IBicycleStations } from "./interfaces/bicycles-stations.interface";
 import { useToastStore } from "@/store/toastStore";
 
 interface Props {
-    bicycleId: number;
+    model_id: number;
     pricePerHour: number;
     stations: IBicycleStations[] | null;
     onClose: () => void;
@@ -32,7 +32,7 @@ const createRental = async (data: CreateRentalDto) => {
 };
 
 export default function RentModal({
-    bicycleId,
+    model_id,
     pricePerHour,
     stations,
     onClose,
@@ -93,7 +93,7 @@ export default function RentModal({
             setLoading(true);
 
             await createRental({
-                bicycle_id: bicycleId,
+                model_id: model_id,
                 station_id: stationId,
                 start_time: start.toISOString(),
                 end_time: end.toISOString(),
@@ -126,8 +126,8 @@ export default function RentModal({
                 >
                     <option value="">Станция проката</option>
                     {stations?.map((s) => (
-                        <option key={s.station.id} value={s.station.id}>
-                            {s.station.name}
+                        <option key={s.id} value={s.id}>
+                            {s.name}
                         </option>
                     ))}
                 </select>

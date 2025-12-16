@@ -1,9 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
-import { API_ROUTES, BASE_URL } from "../../lib/routes"
-import Image from "next/image";
-import Link from "next/link";
+import { API_ROUTES } from "../../lib/routes"
 import { IBicycle } from "@/src/interfaces/bicycle.interface";
 import { IBicycleType } from "@/src/interfaces/bicycle-type.interface";
 import BicycleCard from "@/src/components/bicycle/BicycleCard";
@@ -37,10 +35,10 @@ export default function BicycleCatalog() {
     }, [bicycles]);
 
     const getBicycles = () => {
-        fetch(API_ROUTES.BICYCLES.ALL)
+        fetch(API_ROUTES.BICYCLE_MODELS.ALL)
             .then((res) => res.json())
             .then((data) => {
-                console.log("Велосипеды \n", data);
+                console.log("Модели велосипедов \n", data);
                 setBicycles(data);
             });
     }
