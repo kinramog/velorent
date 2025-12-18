@@ -11,6 +11,7 @@ import { IBicycleModel } from "@/src/interfaces/bicycle.interface";
 
 export default function BicyclePage() {
     const isDev = process.env.NODE_ENV === "development";
+    
     const { id } = useParams();
     const [bicycleModel, setBicycleModel] = useState<IBicycleModel | null>(null);
     const [stations, setStations] = useState<IBicycleStations[] | null>(null);

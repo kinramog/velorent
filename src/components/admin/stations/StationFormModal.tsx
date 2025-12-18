@@ -2,35 +2,38 @@
 
 import { useEffect, useState } from "react";
 import { API_ROUTES, BASE_URL } from "@/src/lib/routes";
+import { authFetch } from "@/src/lib/authFetch";
 import { useAuthStore } from "@/store/authStore";
 import Image from "next/image";
-import { IBicycleModel } from "@/src/interfaces/bicycle.interface";
+import { useToastStore } from "@/store/toastStore";
+import { IBicycleStations } from "@/src/interfaces/bicycles-stations.interface";
 
 interface Props {
-    bicycle: IBicycleModel | null;
+    station: IBicycleStations | null;
     onClose: () => void;
     onSuccess: () => void;
 }
 
-export default function BicycleFormModal({ bicycle, onClose, onSuccess }: Props) {
+export default function StationFormModal({ station, onClose, onSuccess }: Props) {
     const isDev = process.env.NODE_ENV === "development";
+    const showToast = useToastStore((s) => s.show);
     const { token } = useAuthStore();
 
     const [name, setName] = useState("");
-    const [price, setPrice] = useState("");
+    const [address, setAddress] = useState("");
     const [description, setDescription] = useState("");
     const [imageFile, setImageFile] = useState<File | null>(null);
     const [preview, setPreview] = useState<string | null>(null);
     const [loading, setLoading] = useState(false);
 
     useEffect(() => {
-        if (bicycle) {
-            setName(bicycle.name);
-            setPrice(String(bicycle.price_per_hour));
-            setDescription(bicycle.description ?? "");
-            setPreview(bicycle.img_path ? BASE_URL + bicycle.img_path : null);
+        if (station) {
+            setName(station.name);
+            setAddress(station.address);
+            setDescription(station.description ?? "");
+            setPreview(station.img_path ? BASE_URL + station.img_path : null);
         }
-    }, [bicycle]);
+    }, [station]);
 
     const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0];
@@ -46,45 +49,39 @@ export default function BicycleFormModal({ bicycle, onClose, onSuccess }: Props)
     };
 
     const handleSubmit = async () => {
+        if (!token) return;
+
         setLoading(true);
         try {
-            const payload = {
-                name,
-                price_per_hour: Number(price),
-                description,
-            };
-
-            // Создание или редактирование велосипеда
-            const res = await fetch(
-                bicycle ? API_ROUTES.BICYCLE_MODELS.BY_ID(bicycle.id) : API_ROUTES.BICYCLE_MODELS.ALL,
+            // 1. Создаем или редактируем станцию
+            const payload = { name, address, description };
+            const res = await authFetch(API_ROUTES.STATIONS.BY_ID(station?.id),
                 {
-                    method: bicycle ? "PATCH" : "POST",
-                    headers: { "Content-Type": "application/json", ...(token ? { Authorization: `Bearer ${token}` } : {}) },
+                    method: station?.id ? "PATCH" : "POST",
                     body: JSON.stringify(payload),
                 }
             );
 
             if (!res.ok) throw await res.json();
-            const savedBike = await res.json();
-
-            // Загрузка картинки, если выбран файл
-            if (imageFile && token) {
+            const savedStation = await res.json();
+            console.log(savedStation)
+            // 2. Загружаем картинку, если выбран файл
+            if (imageFile) {
                 const formData = new FormData();
                 formData.append("image", imageFile);
 
-                const imgRes = await fetch(API_ROUTES.BICYCLE_MODELS.SET_IMAGE(savedBike.id), {
+                const imgRes = await fetch(API_ROUTES.STATIONS.SET_IMAGE(savedStation.id), {
                     method: "POST",
                     headers: { Authorization: `Bearer ${token}` },
                     body: formData,
                 });
-
                 if (!imgRes.ok) throw await imgRes.json();
             }
 
             onSuccess();
         } catch (err) {
-            console.error("Ошибка при сохранении велосипеда:", err);
-            alert("Ошибка при сохранении. Проверьте консоль.");
+            console.error("Ошибка при сохранении станции:", err);
+            showToast("error", "Ошибка при сохранении. Проверьте консоль.");
         } finally {
             setLoading(false);
         }
@@ -94,22 +91,21 @@ export default function BicycleFormModal({ bicycle, onClose, onSuccess }: Props)
         <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
             <div className="bg-white rounded-xl p-6 w-full max-w-md space-y-4">
                 <h2 className="text-xl font-bold">
-                    {bicycle ? "Редактирование велосипеда" : "Новый велосипед"}
+                    {station ? "Редактирование станции" : "Новая станция"}
                 </h2>
 
                 <input
                     className="w-full border rounded px-3 py-2"
-                    placeholder="Название"
+                    placeholder="Название станции"
                     value={name}
                     onChange={e => setName(e.target.value)}
                 />
 
                 <input
                     className="w-full border rounded px-3 py-2"
-                    placeholder="Цена за час"
-                    type="number"
-                    value={price}
-                    onChange={e => setPrice(e.target.value)}
+                    placeholder="Адрес"
+                    value={address}
+                    onChange={e => setAddress(e.target.value)}
                 />
 
                 <textarea
@@ -124,7 +120,7 @@ export default function BicycleFormModal({ bicycle, onClose, onSuccess }: Props)
                         <div className="h-32 w-full relative rounded overflow-hidden border">
                             <Image
                                 src={preview}
-                                alt={bicycle?.name || "Велосипед"}
+                                alt={station?.name || "Станция"}
                                 fill
                                 className="object-cover"
                                 unoptimized={isDev}

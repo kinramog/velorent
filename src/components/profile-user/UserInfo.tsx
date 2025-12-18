@@ -25,7 +25,6 @@ export default function UserProfileCard({ user }: Props) {
         const file = e.target.files?.[0];
         if (!file || !token) return;
 
-        // (опционально) валидация
         if (!file.type.startsWith("image/")) {
             alert("Можно загружать только изображения");
             return;

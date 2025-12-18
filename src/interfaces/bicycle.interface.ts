@@ -13,5 +13,6 @@ export interface IBicycleModel {
         id: number,
         name: string
     },
-    bicycles: []
+    bicycles: [],
+    bicycles_count?: number; 
 }

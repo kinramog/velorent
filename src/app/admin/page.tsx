@@ -1,109 +1,93 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { API_ROUTES, BASE_URL } from "@/src/lib/routes";
-import { useToastStore } from "@/store/toastStore";
 import { authFetch } from "@/src/lib/authFetch";
-import { IRental } from "@/src/interfaces/rental.interface";
+import { API_ROUTES } from "@/src/lib/routes";
+import { Bike, Users, MapPin, Activity } from "lucide-react";
+import { motion } from "framer-motion";
 
-interface IStation {
-    id: number;
-    name: string;
+interface DashboardStats {
+    totalBicycles: number;
+    activeRentals: number;
+    totalUsers: number;
+    stations: number;
 }
 
-export default function AdminRentalsPage() {
-    const [rentals, setRentals] = useState<IRental[]>([]);
-    const [stations, setStations] = useState<IStation[]>([]);
+export default function AdminDashboardPage() {
+    const [stats, setStats] = useState<DashboardStats | null>(null);
     const [loading, setLoading] = useState(true);
-    const [selectedRental, setSelectedRental] = useState<IRental | null>(null);
-    const [selectedStationId, setSelectedStationId] = useState<number | null>(null);
-    const showToast = useToastStore((s) => s.show);
 
     useEffect(() => {
-        // Получаем активные аренды
-        authFetch(API_ROUTES.ADMIN.ALL_RENTALS)
+        authFetch(API_ROUTES.ADMIN.DASHBOARD)
             .then(res => res.json())
-            .then(setRentals);
-
-        // Получаем список станций
-        authFetch(API_ROUTES.STATIONS.ROOT)
-            .then(res => res.json())
-            .then(setStations)
+            .then(setStats)
             .finally(() => setLoading(false));
     }, []);
 
-    if (loading) return <div>Загрузка...</div>;
+    if (loading) {
+        return <div className="p-6">Загрузка...</div>;
+    }
 
-    const finishRental = async () => {
-        if (!selectedRental || !selectedStationId) return;
+    if (!stats) {
+        return <div className="p-6">Нет данных</div>;
+    }
 
-        const res = await authFetch(API_ROUTES.RENTALS.FINISH(selectedRental.id), {
-            method: 'PATCH',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ stationId: selectedStationId }),
-        });
-
-        if (res.ok) {
-            showToast("success", "Аренда завершена");
-            setRentals(rentals.filter(r => r.id !== selectedRental.id));
-            setSelectedRental(null);
-            setSelectedStationId(null);
-        } else {
-            const err = await res.json();
-            showToast("error", err.message || "Ошибка при завершении аренды");
-        }
-    };
+    const cards = [
+        {
+            title: "Велосипеды",
+            value: stats.totalBicycles,
+            icon: Bike,
+        },
+        {
+            title: "Активные аренды",
+            value: stats.activeRentals,
+            icon: Activity,
+        },
+        {
+            title: "Пользователи",
+            value: stats.totalUsers,
+            icon: Users,
+        },
+        {
+            title: "Станции",
+            value: stats.stations,
+            icon: MapPin,
+        },
+    ];
 
     return (
-        <div className="p-6">
-            <h1 className="text-2xl font-bold mb-4">Активные аренды</h1>
-            <table className="w-full border-collapse border border-gray-300">
-                <thead>
-                    <tr>
-                        <th className="border p-2">Пользователь</th>
-                        <th className="border p-2">Велосипед</th>
-                        <th className="border p-2">Станция</th>
-                        <th className="border p-2">Старт</th>
-                        <th className="border p-2">Конец</th>
-                        <th className="border p-2">Цена</th>
-                        <th className="border p-2">Действия</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {rentals.map(r => (
-                        <tr key={r.id}>
-                            <td className="border p-2">{r.user.fio}</td>
-                            <td className="border p-2">{r.bicycle.model.name}</td>
-                            <td className="border p-2">{r.station.name}</td>
-                            <td className="border p-2">{new Date(r.start_time).toLocaleString()}</td>
-                            <td className="border p-2">{new Date(r.end_time).toLocaleString()}</td>
-                            <td className="border p-2">{r.total_price} ₽</td>
-                            <td className="border p-2">
-                                <select
-                                    value={selectedRental?.id === r.id ? selectedStationId ?? '' : ''}
-                                    onChange={(e) => {
-                                        setSelectedRental(r);
-                                        setSelectedStationId(Number(e.target.value));
-                                    }}
-                                    className="border p-1 mr-2"
-                                >
-                                    <option value="">Выберите станцию</option>
-                                    {stations.map(s => (
-                                        <option key={s.id} value={s.id}>{s.name}</option>
-                                    ))}
-                                </select>
-                                <button
-                                    onClick={finishRental}
-                                    className="bg-green-500 text-white px-2 py-1 rounded"
-                                    disabled={selectedRental?.id !== r.id || !selectedStationId}
-                                >
-                                    Завершить
-                                </button>
-                            </td>
-                        </tr>
-                    ))}
-                </tbody>
-            </table>
+        <div className="p-6 space-y-6">
+            <h1 className="text-2xl font-bold">Панель администратора</h1>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                {cards.map((card, i) => {
+                    const Icon = card.icon;
+
+                    return (
+                        <motion.div
+                            key={card.title}
+                            initial={{ opacity: 0, y: 10 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ delay: i * 0.05 }}
+                        >
+                            <div className="bg-white rounded-xl shadow p-6 flex items-center gap-4">
+                                <div className="p-3 rounded-lg bg-veloprimary/10 text-veloprimary">
+                                    <Icon className="w-6 h-6" />
+                                </div>
+
+                                <div>
+                                    <div className="text-sm text-gray-500">
+                                        {card.title}
+                                    </div>
+                                    <div className="text-2xl font-bold">
+                                        {card.value}
+                                    </div>
+                                </div>
+                            </div>
+                        </motion.div>
+                    );
+                })}
+            </div>
         </div>
     );
 }

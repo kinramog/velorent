@@ -42,11 +42,12 @@ export default function Header() {
     return (
         <>
             <header className="w-full bg-velobone shadow-sm">
-                <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
+                <div className="max-w-[1480px]  mx-auto px-6 py-4 flex items-center justify-between">
                     {/* Навигация */}
                     <nav className="hidden md:flex items-center gap-6">
                         <Link href="/bicycle" className="hover:text-veloprimary">Каталог</Link>
                         <Link href="/stations" className="hover:text-veloprimary">Пункты проката</Link>
+                        <Link href="/about" className="hover:text-veloprimary">Об авторе проекта</Link>
                     </nav>
                     {/* Лого */}
                     <Link href="/" className="text-2xl font-bold text-veloprimary">
@@ -65,7 +66,7 @@ export default function Header() {
                             <>
                                 {user?.role?.name === "admin" ? (
                                     <Link
-                                        href="/admin/rentals"
+                                        href="/admin"
                                         className="px-4 py-2 rounded bg-veloprimary text-white hover:opacity-90"
                                     >
                                         Кабинет администратора
@@ -96,7 +97,7 @@ export default function Header() {
                     <div className="md:hidden border-t bg-white px-6 py-4 flex flex-col gap-4">
                         <Link href="/bicycle">Каталог</Link>
                         <Link href="/stations">Пункты проката</Link>
-                        <Link href="/prices">Цены</Link>
+                        <Link href="/about">Об авторе проекта</Link>
                         <hr />
                         {!isAuth ? (
                             <>
@@ -109,7 +110,7 @@ export default function Header() {
                             <>
                                 {user?.role?.name === "admin" ? (
                                     <Link
-                                        href="/admin/rentals"
+                                        href="/admin"
                                         className="px-4 py-2 bg-veloprimary text-white rounded-md hover:bg-velodeep text-center"
                                     >
                                         Кабинет администратора

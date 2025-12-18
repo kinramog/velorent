@@ -14,9 +14,18 @@ export default function AdminRentalsPage() {
     const [stations, setStations] = useState<IBicycleStations[]>([]);
     const [loading, setLoading] = useState(true);
     const [statusFilter, setStatusFilter] = useState<RentalStatusEnum>(RentalStatusEnum.ACTIVE);
-    const [selectedStation, setSelectedStation] = useState<Record<number, number>>({});
-    const [actualEndTime, setActualEndTime] = useState<Record<number, string>>({});
+    const [selectedStation, setSelectedStation] = useState<Record<number, number | null>>({});
+    const [actualEndTime, setActualEndTime] = useState<Record<number, string | null>>({});
+    const [actualEndTimeOverrides, setActualEndTimeOverrides] = useState<Record<number, string>>({});
+
     const showToast = useToastStore((s) => s.show);
+
+    const getActualEndTimeValue = (r: IRental) => {
+        return (
+            actualEndTimeOverrides[r.id] ??
+            toLocalDatetimeInput(r.end_time_actual ?? r.end_time)
+        );
+    };
 
     const toLocalDatetimeInput = (date: Date | string) => {
         const d = new Date(date);
@@ -31,16 +40,8 @@ export default function AdminRentalsPage() {
         ]).finally(() => setLoading(false));
     }, []);
 
-    useEffect(() => {
-        // Инициализируем значения end_time_actual для активных аренды
-        const defaults: Record<number, string> = {};
-        rentals.forEach(r => {
-            defaults[r.id] = toLocalDatetimeInput(r.end_time_actual ?? r.end_time);
-        });
-        setActualEndTime(defaults);
-    }, [rentals]);
-
     const filteredRentals = rentals.filter(r => r.status.id === statusFilter);
+
     const finishRental = async (rental: IRental) => {
         if (!selectedStation[rental.id]) {
             showToast("error", "Выберите станцию возврата");
@@ -61,7 +62,7 @@ export default function AdminRentalsPage() {
             showToast("success", "Аренда завершена");
 
             setRentals(prev => prev.map(r => r.id === updatedRental.id ? updatedRental : r));
-            setSelectedStation(prev => ({ ...prev, [rental.id]: undefined }));
+            setSelectedStation(prev => ({ ...prev, [rental.id]: null }));
         } else {
             const err = await res.json();
             showToast("error", err.message || "Ошибка при завершении аренды");
@@ -119,18 +120,19 @@ export default function AdminRentalsPage() {
                                     <td className="p-3 text-center">{new Date(r.end_time).toLocaleString()}</td>
                                     <td className="p-3 text-center">
                                         {isActive ? (
-                                            <input
-                                                type="datetime-local"
-                                                value={actualEndTime[r.id] || ""}
-                                                min={toLocalDatetimeInput(r.start_time)}
-                                                onChange={(e) =>
-                                                    setActualEndTime(prev => ({
-                                                        ...prev,
-                                                        [r.id]: e.target.value,
-                                                    }))
-                                                }
-                                                className="border rounded px-2 py-1"
-                                            />
+                                            <div>
+                                                <input className="cursor-pointer border border-gray-300 p-2 rounded"
+                                                    type="datetime-local"
+                                                    value={getActualEndTimeValue(r)}
+                                                    min={toLocalDatetimeInput(r.start_time)}
+                                                    onChange={(e) =>
+                                                        setActualEndTimeOverrides(prev => ({
+                                                            ...prev,
+                                                            [r.id]: e.target.value,
+                                                        }))
+                                                    }
+                                                />
+                                            </div>
                                         ) : (
                                             new Date(r.end_time_actual).toLocaleString()
                                         )}
@@ -140,7 +142,7 @@ export default function AdminRentalsPage() {
                                         {isActive && (
                                             <div className="flex flex-col gap-2">
                                                 <select
-                                                    className="border rounded px-2 py-1"
+                                                    className="border rounded px-2 py-1 cursor-pointer"
                                                     value={selectedStation[r.id] ?? ""}
                                                     onChange={(e) =>
                                                         setSelectedStation(prev => ({
@@ -157,7 +159,7 @@ export default function AdminRentalsPage() {
 
                                                 <button
                                                     onClick={() => finishRental(r)}
-                                                    className="rounded bg-green-500 text-white py-1"
+                                                    className="rounded bg-green-500 text-white py-1 hover:bg-green-600 cursor-pointer"
                                                     disabled={!selectedStation[r.id]}
                                                 >
                                                     Завершить

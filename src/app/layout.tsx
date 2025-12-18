@@ -26,14 +26,14 @@ export default function RootLayout({
 
   return (
     <html lang="en">
-      <body className={`${montserrat.variable} font-sans`}>
+      <body className={`${montserrat.variable} font-sans flex flex-col min-h-screen`}>
 
         <AuthInit />
         <Toast />
         
         <Header />
 
-        <main>
+        <main className="flex-1">
           {children}
         </main>
 

@@ -19,10 +19,13 @@ export const API_ROUTES = {
     BICYCLES: {
         ALL: `${URL}/bicycles`,
         BY_ID: (id) => `${URL}/bicycles/${id}`,
+        BULK_CREATE: `${URL}/bicycles/bulk`,
+        BULK_REMOVE: `${URL}/bicycles/bulk-remove`,
     },
     BICYCLE_MODELS: {
         ALL: `${URL}/bicycle-model`,
         BY_ID: (id) => `${URL}/bicycle-model/${id}`,
+        SET_IMAGE: (id) => `${URL}/bicycle-model/${id}/image`,
     },
 
     BICYCLE_TYPES: {
@@ -30,7 +33,9 @@ export const API_ROUTES = {
     },
     STATIONS: {
         ROOT: `${URL}/station`,
+        BY_ID: (id) => `${URL}/station/${id}`,
         BICYCLE_STATIONS: (id) => `${URL}/station/bicycle-model/${id}`,
+        SET_IMAGE: (id) => `${URL}/station/${id}/image`,
     },
     RENTALS: {
         CREATE: `${URL}/rental`,
@@ -40,5 +45,6 @@ export const API_ROUTES = {
     },
     ADMIN: {
         ALL_RENTALS: `${URL}/rental/all-rentals`,
+        DASHBOARD: `${URL}/admin/dashboard`,
     }
 };
