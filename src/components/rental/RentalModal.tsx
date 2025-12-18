@@ -5,7 +5,7 @@ import { CreateRentalDto } from "./interfaces/create-rental.interface";
 import { authFetch } from "@/src/lib/authFetch";
 import { API_ROUTES } from "@/src/lib/routes";
 import RentPrice from "./services/RentPrice";
-import { IBicycleStations } from "./interfaces/bicycles-stations.interface";
+import { IBicycleStations } from "../../interfaces/bicycles-stations.interface";
 import { useToastStore } from "@/store/toastStore";
 
 interface Props {

@@ -6,7 +6,7 @@ import Image from "next/image";
 import { API_ROUTES, BASE_URL } from "@/src/lib/routes";
 import RentModal from "@/src/components/rental/RentalModal";
 import { useToastStore } from "@/store/toastStore";
-import { IBicycleStations } from "@/src/components/rental/interfaces/bicycles-stations.interface";
+import { IBicycleStations } from "@/src/interfaces/bicycles-stations.interface";
 import { IBicycleModel } from "@/src/interfaces/bicycle.interface";
 
 export default function BicyclePage() {

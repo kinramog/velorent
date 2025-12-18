@@ -41,7 +41,7 @@ export default function Header() {
     }
     return (
         <>
-            <header className="w-full bg-white shadow-sm">
+            <header className="w-full bg-velobone shadow-sm">
                 <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
                     {/* Навигация */}
                     <nav className="hidden md:flex items-center gap-6">
@@ -65,7 +65,7 @@ export default function Header() {
                             <>
                                 {user?.role?.name === "admin" ? (
                                     <Link
-                                        href="/admin"
+                                        href="/admin/rentals"
                                         className="px-4 py-2 rounded bg-veloprimary text-white hover:opacity-90"
                                     >
                                         Кабинет администратора
@@ -109,7 +109,7 @@ export default function Header() {
                             <>
                                 {user?.role?.name === "admin" ? (
                                     <Link
-                                        href="/admin"
+                                        href="/admin/rentals"
                                         className="px-4 py-2 bg-veloprimary text-white rounded-md hover:bg-velodeep text-center"
                                     >
                                         Кабинет администратора

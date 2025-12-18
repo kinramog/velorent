@@ -2,14 +2,14 @@
 
 import { useEffect, useMemo, useState } from "react";
 import { API_ROUTES } from "../../lib/routes"
-import { IBicycle } from "@/src/interfaces/bicycle.interface";
 import { IBicycleType } from "@/src/interfaces/bicycle-type.interface";
 import BicycleCard from "@/src/components/bicycle/BicycleCard";
 import { IBicycleFilters } from "@/src/interfaces/bicycle-filters.interface";
+import { IBicycleModel } from "@/src/interfaces/bicycle.interface";
 
 // Каталог велосипедов
 export default function BicycleCatalog() {
-    const [bicycles, setBicycles] = useState<IBicycle[]>([]);
+    const [bicycles, setBicycles] = useState<IBicycleModel[]>([]);
     const [bicycleTypes, setBicycleTypes] = useState<IBicycleType[]>([]);
     const [filters, setFilters] = useState<IBicycleFilters>({ type_id: null, frame_size: null, height: null });
     const [sort, setSort] = useState("");
@@ -56,7 +56,7 @@ export default function BicycleCatalog() {
         getBicycleTypes();
     }, []);
 
-    const applyFilters = (items: IBicycle[]): IBicycle[] => {
+    const applyFilters = (items: IBicycleModel[]): IBicycleModel[] => {
         return items
             .filter((bike) => (filters.type_id ? bike.type.id === filters.type_id : true))
             .filter((bike) => (filters.frame_size ? bike.frame_size === filters.frame_size : true))
@@ -78,7 +78,7 @@ export default function BicycleCatalog() {
         <div className="min-h-screen bg-velosecondary p-6">
             <div className="mx-auto max-w-[1480px] px-4">
                 <h1 className="text-3xl font-bold mb-6">Каталог велосипедов</h1>
-                
+
                 {/* Кнопка открытия фильтров для мобильной версии */}
                 <div className="md:hidden mb-4">
                     <button
@@ -114,7 +114,7 @@ export default function BicycleCatalog() {
                         </select>
                     </div>
                     <div className="mb-3 md:mb-0 md:border-r md:pr-3">
-                        <select className="w-48 md:w-auto p-2 rounded-lg" onChange={(e) => setFilters({ ...filters, height: e.target.value })}
+                        <select className="w-48 md:w-auto p-2 rounded-lg" onChange={(e) => setFilters({ ...filters, height: +(e.target.value) })}
                             value={filters.height ?? ''}>
                             <option value="">Рост</option>
                             {heightRanges.map(r => (
