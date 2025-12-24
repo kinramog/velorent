@@ -67,7 +67,7 @@ export default function AdminBicyclesPage() {
                         setEditingBike(null);
                         setModalOpen(true);
                     }}
-                    className="bg-veloprimary text-white px-4 py-2 rounded-lg"
+                    className="bg-veloprimary text-white px-4 py-2 rounded-lg cursor-pointer"
                 >
                     + Добавить
                 </button>

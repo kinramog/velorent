@@ -5,21 +5,36 @@ export default function HomePage() {
     <>
 
       {/* HERO */}
-      <section className="bg-velobone py-32">
-        <div className="max-w-6xl mx-auto px-4 text-center">
-          <h1 className="text-4xl font-bold text-velodeep">
-            Аренда велосипедов по всей России
+      <section className="relative min-h-[90vh] flex items-center justify-center">
+        {/* Фон */}
+        <div
+          className="absolute inset-0 bg-cover bg-center"
+          style={{
+            backgroundImage: "url('/hero-bike.jpg')",
+          }}
+        />
+
+        {/* Затемнение */}
+        <div className="absolute inset-0 bg-velodeep/60" />
+
+        {/* Контент */}
+        <div className="relative z-10 max-w-4xl mx-auto px-4 text-center text-white">
+          <h1 className="text-4xl md:text-5xl font-bold leading-tight">
+            Аренда велосипедов
+            <br />
+            по всей России
           </h1>
 
-          <p className="mt-4 text-lg text-velodeep/80 max-w-2xl mx-auto">
-            Удобно, быстро и доступно. Находим ближайший пункт проката и
-            отправляемся в путь!
+          <p className="mt-6 text-lg md:text-xl text-white/90">
+            Быстро. Удобно. Рядом с вами.
+            <br />
+            Выбирайте велосипед и отправляйтесь в путь уже сегодня.
           </p>
 
-          <div className="mt-8">
+          <div className="mt-10 flex justify-center gap-4">
             <Link
               href="/bicycle"
-              className="px-6 py-3 bg-veloprimary text-white text-lg rounded-md hover:bg-velodeep transition"
+              className="px-8 py-4 bg-veloprimary text-white text-lg rounded-md hover:bg-velosecondary transition shadow-lg"
             >
               Выбрать велосипед
             </Link>
@@ -28,36 +43,47 @@ export default function HomePage() {
       </section>
 
       {/* Блок преимуществ */}
-      <section className="py-20 bg-white">
-        <div className="max-w-6xl mx-auto px-4 grid grid-cols-1 md:grid-cols-3 gap-10 text-center">
-          <div>
-            <h3 className="font-semibold text-xl text-velodeep">
-              Большой выбор велосипедов
-            </h3>
-            <p className="text-velodeep/70 mt-2">
-              Городские, горные, электровелосипеды и многое другое.
-            </p>
-          </div>
+            {/* Преимущества */}
+      <section className="py-28 bg-velobone">
+        <div className="max-w-6xl mx-auto px-4">
+          <h2 className="text-3xl font-bold text-center text-velodeep mb-16">
+            Почему выбирают нас
+          </h2>
 
-          <div>
-            <h3 className="font-semibold text-xl text-velodeep">
-              Удобные пункты проката
-            </h3>
-            <p className="text-velodeep/70 mt-2">
-              В каждом районе — выбирайте любой.
-            </p>
-          </div>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-12 text-center">
+            <div>
+              <div className="text-4xl mb-4">🚲</div>
+              <h3 className="font-semibold text-xl text-velodeep">
+                Большой выбор велосипедов
+              </h3>
+              <p className="text-velodeep/70 mt-3">
+                Городские, горные, электровелосипеды и другие модели.
+              </p>
+            </div>
 
-          <div>
-            <h3 className="font-semibold text-xl text-velodeep">
-              Доступные цены
-            </h3>
-            <p className="text-velodeep/70 mt-2">
-              Прозрачная система аренды без скрытых платежей.
-            </p>
+            <div>
+              <div className="text-4xl mb-4">📍</div>
+              <h3 className="font-semibold text-xl text-velodeep">
+                Удобные пункты проката
+              </h3>
+              <p className="text-velodeep/70 mt-3">
+                Пункты в каждом районе — выбирайте ближайший.
+              </p>
+            </div>
+
+            <div>
+              <div className="text-4xl mb-4">💰</div>
+              <h3 className="font-semibold text-xl text-velodeep">
+                Прозрачные цены
+              </h3>
+              <p className="text-velodeep/70 mt-3">
+                Никаких скрытых платежей и неожиданных доплат.
+              </p>
+            </div>
           </div>
         </div>
       </section>
+
 
     </>
   );

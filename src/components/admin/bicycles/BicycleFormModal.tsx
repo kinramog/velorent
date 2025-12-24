@@ -5,6 +5,9 @@ import { API_ROUTES, BASE_URL } from "@/src/lib/routes";
 import { useAuthStore } from "@/store/authStore";
 import Image from "next/image";
 import { IBicycleModel } from "@/src/interfaces/bicycle.interface";
+import { authFetch } from "@/src/lib/authFetch";
+import { IBicycleType } from "@/src/interfaces/bicycle-type.interface";
+import { useToastStore } from "@/store/toastStore";
 
 interface Props {
     bicycle: IBicycleModel | null;
@@ -14,23 +17,48 @@ interface Props {
 
 export default function BicycleFormModal({ bicycle, onClose, onSuccess }: Props) {
     const isDev = process.env.NODE_ENV === "development";
+
+    const showToast = useToastStore((s) => s.show);
     const { token } = useAuthStore();
 
     const [name, setName] = useState("");
     const [price, setPrice] = useState("");
+    const [type, setType] = useState("");
     const [description, setDescription] = useState("");
+    const [minHeight, setMinHeight] = useState("");
+    const [maxHeight, setMaxHeight] = useState("");
+    const [frameSize, setFrameSize] = useState("");
     const [imageFile, setImageFile] = useState<File | null>(null);
+    const [bicycleTypes, setBicycleTypes] = useState<IBicycleType[] | null>(null);
     const [preview, setPreview] = useState<string | null>(null);
     const [loading, setLoading] = useState(false);
 
     useEffect(() => {
         if (bicycle) {
             setName(bicycle.name);
+            setType(bicycle.type.id);
             setPrice(String(bicycle.price_per_hour));
+            setMinHeight(bicycle.cyclist_min_height);
+            setMaxHeight(bicycle.cyclist_max_height);
+            setFrameSize(bicycle.frame_size);
             setDescription(bicycle.description ?? "");
             setPreview(bicycle.img_path ? BASE_URL + bicycle.img_path : null);
         }
     }, [bicycle]);
+
+
+    const loadBicycleTypes = () => {
+        authFetch(API_ROUTES.BICYCLE_TYPES.ALL)
+            .then(res => res.json())
+            .then(data => {
+                console.log("Все типы велосипедов\n", data);
+                setBicycleTypes(data);
+            });
+    };
+
+    useEffect(() => {
+        loadBicycleTypes();
+    }, []);
 
     const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0];
@@ -52,6 +80,10 @@ export default function BicycleFormModal({ bicycle, onClose, onSuccess }: Props)
                 name,
                 price_per_hour: Number(price),
                 description,
+                type_id: type,
+                cyclist_min_height: minHeight,
+                cyclist_max_height: maxHeight,
+                frame_size: frameSize,
             };
 
             // Создание или редактирование велосипеда
@@ -66,6 +98,7 @@ export default function BicycleFormModal({ bicycle, onClose, onSuccess }: Props)
 
             if (!res.ok) throw await res.json();
             const savedBike = await res.json();
+
 
             // Загрузка картинки, если выбран файл
             if (imageFile && token) {
@@ -82,9 +115,14 @@ export default function BicycleFormModal({ bicycle, onClose, onSuccess }: Props)
             }
 
             onSuccess();
-        } catch (err) {
+        } catch (err: any) {
+            if (typeof (err.message) == 'string') {
+                const msg = [err.message];
+                showToast("error", msg || "Произошла ошибка");
+            } else {
+                showToast("error", err.message || "Произошла ошибка");
+            }
             console.error("Ошибка при сохранении велосипеда:", err);
-            alert("Ошибка при сохранении. Проверьте консоль.");
         } finally {
             setLoading(false);
         }
@@ -111,6 +149,27 @@ export default function BicycleFormModal({ bicycle, onClose, onSuccess }: Props)
                     value={price}
                     onChange={e => setPrice(e.target.value)}
                 />
+                <input
+                    className="w-full border rounded px-3 py-2"
+                    placeholder="Минимальный рост"
+                    type="number"
+                    value={minHeight}
+                    onChange={e => setMinHeight(e.target.value)}
+                />
+                <input
+                    className="w-full border rounded px-3 py-2"
+                    placeholder="Максимальный рост"
+                    type="number"
+                    value={maxHeight}
+                    onChange={e => setMaxHeight(e.target.value)}
+                />
+                <input
+                    className="w-full border rounded px-3 py-2"
+                    placeholder="Размер рамы"
+                    type="number"
+                    value={frameSize}
+                    onChange={e => setFrameSize(e.target.value)}
+                />
 
                 <textarea
                     className="w-full border rounded px-3 py-2"
@@ -118,6 +177,13 @@ export default function BicycleFormModal({ bicycle, onClose, onSuccess }: Props)
                     value={description}
                     onChange={e => setDescription(e.target.value)}
                 />
+
+                <select onChange={e => setType(e.target.value)}>
+                    <option value="">Тип велосипеда</option>
+                    {bicycleTypes?.map(type => (
+                        <option key={type.id} value={type.id}>{type.name}</option>
+                    ))}
+                </select>
 
                 <div className="flex flex-col gap-2">
                     {preview && (

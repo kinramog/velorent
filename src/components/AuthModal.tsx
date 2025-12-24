@@ -27,7 +27,6 @@ export default function AuthModal({
             });
 
             const data = await res.json();
-            console.log(data);
 
             if (data.error) {
                 if (typeof (data.message) == 'string') {
@@ -61,7 +60,9 @@ export default function AuthModal({
                 <input
                     className="w-full mb-3 p-2 border rounded"
                     placeholder="Email"
+                    type="email"
                     value={email}
+                    required
                     onChange={e => setEmail(e.target.value)}
                 />
 
