@@ -40,6 +40,7 @@ export const API_ROUTES = {
     RENTALS: {
         CREATE: `${URL}/rental`,
         HISTORY: (userId) => `${URL}/rental/user/${userId}`,
+        START:  (id) => `${URL}/rental/${id}/start`,
         FINISH: (id) => `${URL}/rental/${id}/finish`,
         CANCEL: (id) => `${URL}/rental/${id}/cancel`,
     },

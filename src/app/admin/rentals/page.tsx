@@ -69,6 +69,36 @@ export default function AdminRentalsPage() {
         }
     };
 
+    const startRental = async (rentalId: number) => {
+        try {
+            const res = await authFetch(API_ROUTES.RENTALS.START(rentalId), {
+                method: "PATCH",
+            });
+            const data = await res.json();
+
+            if (!res.ok) {
+                throw new Error(`Не удалось запустить аренду: ${data.message}`);
+            }
+
+            setRentals((prev) =>
+                prev.map((r) =>
+                    r.id === rentalId ?
+                        {
+                            ...r,
+                            status: {
+                                ...r.status,
+                                id: RentalStatusEnum.ACTIVE,
+                                name: "В аренде",
+                            }
+                        } : r
+                )
+            );
+
+            showToast("success", "Аренда активирована");
+        } catch (e: any) {
+            showToast("error", e.message || "Ошибка старта аренды");
+        }
+    };
     if (loading) return <div className="p-6">Загрузка...</div>;
 
     return (
@@ -78,6 +108,7 @@ export default function AdminRentalsPage() {
             {/* Фильтр */}
             <div className="flex gap-2 mb-6">
                 {[
+                    { id: RentalStatusEnum.BOOKED, label: "Забронированые" },
                     { id: RentalStatusEnum.ACTIVE, label: "Активные" },
                     { id: RentalStatusEnum.COMPLETED, label: "Завершённые" },
                     { id: RentalStatusEnum.CANCELLED, label: "Отменённые" },
@@ -85,7 +116,7 @@ export default function AdminRentalsPage() {
                     <button
                         key={s.id}
                         onClick={() => setStatusFilter(s.id)}
-                        className={`rounded-xl px-4 py-2 border ${statusFilter === s.id ? "bg-veloprimary text-white" : "bg-white"}`}
+                        className={`rounded-xl px-4 py-2 border ${statusFilter === s.id ? "bg-veloprimary text-white" : "bg-white"} cursor-pointer transition hover:bg-velosecondary`}
                     >
                         {s.label}
                     </button>
@@ -110,6 +141,7 @@ export default function AdminRentalsPage() {
                     <tbody>
                         {filteredRentals.map(r => {
                             const isActive = r.status.id === RentalStatusEnum.ACTIVE;
+                            const isBooked = r.status.id === RentalStatusEnum.BOOKED;
 
                             return (
                                 <tr key={r.id} className="border-t">
@@ -166,6 +198,12 @@ export default function AdminRentalsPage() {
                                                 </button>
                                             </div>
                                         )}
+                                        {isBooked && (<button
+                                            onClick={() => startRental(r.id)}
+                                            className="mt-2 rounded-lg border border-brown-300 px-4 py-1 text-sm ы-red-600 hover:bg-veloprimary hover:text-white transition cursor-pointer"
+                                        >
+                                            Старт аренды
+                                        </button>)}
                                     </td>
                                 </tr>
                             );

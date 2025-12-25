@@ -23,7 +23,7 @@ export default function AdminSidebar() {
     const pathname = usePathname();
 
     return (
-        <aside className="w-64 bg-veloprimary flex flex-col">
+        <aside className="w-64 bg-veloprimary flex flex-col min-w-64">
             <div className="p-6 text-xl font-bold">
                 Панель администратора
             </div>
