@@ -15,7 +15,6 @@ export default function AdminRentalsPage() {
     const [loading, setLoading] = useState(true);
     const [statusFilter, setStatusFilter] = useState<RentalStatusEnum>(RentalStatusEnum.ACTIVE);
     const [selectedStation, setSelectedStation] = useState<Record<number, number | null>>({});
-    const [actualEndTime, setActualEndTime] = useState<Record<number, string | null>>({});
     const [actualEndTimeOverrides, setActualEndTimeOverrides] = useState<Record<number, string>>({});
 
     const showToast = useToastStore((s) => s.show);
@@ -53,7 +52,7 @@ export default function AdminRentalsPage() {
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
                 stationId: selectedStation[rental.id],
-                end_time_actual: actualEndTime[rental.id],
+                end_time_actual: actualEndTimeOverrides[rental.id],
             }),
         });
 
